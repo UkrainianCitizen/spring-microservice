@@ -153,19 +153,4 @@ public class TourRatingController {
         return tourRepository.findById(tourId).orElseThrow(() ->
                 new NoSuchElementException("Tour №" + tourId + " does not exist."));
     }
-
-    /**
-     * Exception handler if NoSuchElementException is thrown in this Controller
-     *
-     * @param ex
-     * @return Error message String.
-     */
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public String return400(NoSuchElementException ex) {
-
-        return ex.getMessage();
-
-    }
-
 }
