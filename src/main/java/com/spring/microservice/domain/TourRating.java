@@ -3,7 +3,6 @@ package com.spring.microservice.domain;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import java.util.Objects;
 
 /**
  * Rating of a Tour by a Customer.
@@ -33,9 +32,6 @@ public class TourRating {
         this.comment = comment;
     }
 
-    protected TourRating() {
-    }
-
     @Override
     public String toString() {
         return "TourRating{" +
@@ -43,21 +39,6 @@ public class TourRating {
                 ", score=" + score +
                 ", comment='" + comment + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TourRating that = (TourRating) o;
-        return Objects.equals(pk, that.pk) &&
-                Objects.equals(score, that.score) &&
-                Objects.equals(comment, that.comment);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pk, score, comment);
     }
 
     public TourRatingPk getPk() {

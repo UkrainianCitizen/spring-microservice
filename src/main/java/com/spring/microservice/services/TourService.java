@@ -5,6 +5,7 @@ import com.spring.microservice.domain.Region;
 import com.spring.microservice.domain.Tour;
 
 public interface TourService {
+
     /**
      * Create a new Tour Object and persist it to the Database.
      *
@@ -22,6 +23,7 @@ public interface TourService {
      */
     Tour createTour(String title, String description, String blurb, Integer price, String duration,
                     String bullets, String keywords, String tourPackageName, Difficulty difficulty, Region region);
+
     /**
      * Calculate the number of Tours in the Database.
      *

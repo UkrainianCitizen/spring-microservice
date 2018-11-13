@@ -23,17 +23,15 @@ public class RatingDto {
     /**
      * Constructor to fully initialize the RatingDto
      *
-     * @param score
-     * @param comment
-     * @param customerId
+     * @param score      score
+     * @param comment    comment
+     * @param customerId customer id
      */
     public RatingDto(Integer score, String comment, Integer customerId) {
         this.score = score;
         this.comment = comment;
         this.customerId = customerId;
     }
-
-    protected RatingDto() {}
 
     public Integer getScore() {
         return score;
@@ -58,5 +56,4 @@ public class RatingDto {
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
-
 }

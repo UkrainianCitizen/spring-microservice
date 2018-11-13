@@ -18,16 +18,20 @@ import java.util.List;
 
 /**
  * Main Class for the Spring Boot Application.
+ *
  * @author Alexander Huba
  */
 @SpringBootApplication
 public class ExplorecaliApplication implements CommandLineRunner {
 
-    @Autowired
-    private TourPackageService tourPackageService;
+    private final TourPackageService tourPackageService;
+    private final TourService tourService;
 
     @Autowired
-    private TourService tourService;
+    public ExplorecaliApplication(TourPackageService tourPackageService, TourService tourService) {
+        this.tourPackageService = tourPackageService;
+        this.tourService = tourService;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ExplorecaliApplication.class, args);
@@ -54,7 +58,7 @@ public class ExplorecaliApplication implements CommandLineRunner {
         tourPackageService.createTourPackage("SC", "Snowboard Cali");
         tourPackageService.createTourPackage("TC", "Taste of California");
 
-        tourPackageService.lookup().forEach(tourPackage -> System.out.println(tourPackage));
+        tourPackageService.lookup().forEach(System.out::println);
 
         //Persist the Tours to the database
         TourFromFile.importTours().forEach(t -> tourService.createTour(
@@ -77,7 +81,7 @@ public class ExplorecaliApplication implements CommandLineRunner {
     /**
      * Helper class to import the records in the ExploreCalifornia.json
      */
-    static class TourFromFile {
+    private static class TourFromFile {
 
         //attributes as listed in the .json file
         private String packageType, title, description, blurb, price, length, bullets, keywords, difficulty, region;

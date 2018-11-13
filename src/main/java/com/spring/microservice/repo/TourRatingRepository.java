@@ -28,8 +28,9 @@ public interface TourRatingRepository extends CrudRepository<TourRating, TourRat
 
     /**
      * Lookup a TourRating by the TourId and Customer Id
-     * @param tourId
-     * @param customerId
+     *
+     * @param tourId     tour id
+     * @param customerId customer id
      * @return TourRating if found, null otherwise.
      */
     TourRating findByPkTourIdAndPkCustomerId(Integer tourId, Integer customerId);

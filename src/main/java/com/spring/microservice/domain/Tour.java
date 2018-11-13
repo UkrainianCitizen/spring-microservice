@@ -1,15 +1,17 @@
 package com.spring.microservice.domain;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * The Tour contains all attributes of an Explore California Tour.
  */
-
 @Entity
-public class Tour implements Serializable {
+public class Tour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,9 +59,6 @@ public class Tour implements Serializable {
         this.tourPackage = tourPackage;
         this.difficulty = difficulty;
         this.region = region;
-    }
-
-    protected Tour() {
     }
 
     public Integer getId() {
@@ -161,28 +160,5 @@ public class Tour implements Serializable {
                 ", difficulty=" + difficulty +
                 ", region=" + region +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tour tour = (Tour) o;
-        return Objects.equals(id, tour.id) &&
-                Objects.equals(title, tour.title) &&
-                Objects.equals(description, tour.description) &&
-                Objects.equals(blurb, tour.blurb) &&
-                Objects.equals(price, tour.price) &&
-                Objects.equals(duration, tour.duration) &&
-                Objects.equals(bullets, tour.bullets) &&
-                Objects.equals(keywords, tour.keywords) &&
-                Objects.equals(tourPackage, tour.tourPackage) &&
-                difficulty == tour.difficulty &&
-                region == tour.region;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, blurb, price, duration, bullets, keywords, tourPackage, difficulty, region);
     }
 }

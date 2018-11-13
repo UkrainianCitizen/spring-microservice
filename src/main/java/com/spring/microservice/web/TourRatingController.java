@@ -1,6 +1,5 @@
 package com.spring.microservice.web;
 
-
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.domain.TourRatingPk;
@@ -20,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
-
 /**
  * Tour Rating Controller
  */
@@ -28,19 +26,13 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/tours/{tourId}/ratings")
 public class TourRatingController {
 
-    TourRatingRepository tourRatingRepository;
-    TourRepository tourRepository;
+    private TourRatingRepository tourRatingRepository;
+    private TourRepository tourRepository;
 
     @Autowired
     public TourRatingController(TourRatingRepository tourRatingRepository, TourRepository tourRepository) {
-
         this.tourRatingRepository = tourRatingRepository;
         this.tourRepository = tourRepository;
-
-    }
-
-    protected TourRatingController() {
-
     }
 
     @PostMapping
@@ -62,7 +54,7 @@ public class TourRatingController {
 
         Page<TourRating> tourRatingPage = tourRatingRepository.findByPkTourId(tourId, pageable);
         List<RatingDto> ratingDtoList = tourRatingPage.getContent()
-                .stream().map(tourRating -> toDto(tourRating)).collect(Collectors.toList());
+                .stream().map(this::toDto).collect(Collectors.toList());
 
         return new PageImpl<>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
 
@@ -122,20 +114,18 @@ public class TourRatingController {
     /**
      * Convert the TourRating entity to a RatingDto
      *
-     * @param tourRating
+     * @param tourRating tour rating
      * @return RatingDto
      */
     private RatingDto toDto(TourRating tourRating) {
-
         return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getPk().getCustomerId());
-
     }
 
     /**
      * Verify and return the TourRating for a particular tourId and Customer
      *
-     * @param tourId
-     * @param customerId
+     * @param tourId tour id
+     * @param customerId customer id
      * @return the found TourRating
      * @throws NoSuchElementException if no TourRating found
      */
@@ -148,25 +138,20 @@ public class TourRatingController {
                     + tourId + " for customer" + customerId);
 
         }
-        return rating;
 
+        return rating;
     }
 
     /**
      * Verify and return the Tour given a tourId.
      *
-     * @param tourId
+     * @param tourId tour id
      * @return the found Tour
      * @throws NoSuchElementException if no Tour found.
      */
     private Tour verifyTour(int tourId) throws NoSuchElementException {
-
-        Tour tour = tourRepository.findById(tourId).orElse(null);
-        if (tour == null) {
-            throw new NoSuchElementException("Tour №" + tourId + " does not exist.");
-        }
-        return tour;
-
+        return tourRepository.findById(tourId).orElseThrow(() ->
+                new NoSuchElementException("Tour №" + tourId + " does not exist."));
     }
 
     /**
