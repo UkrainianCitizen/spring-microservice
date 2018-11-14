@@ -1,4 +1,4 @@
-package com.spring.microservice.services;
+package com.spring.microservice.service;
 
 import com.spring.microservice.domain.TourPackage;
 import com.spring.microservice.repo.TourPackageRepository;
