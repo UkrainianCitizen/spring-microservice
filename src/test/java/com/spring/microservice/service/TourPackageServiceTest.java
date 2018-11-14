@@ -32,9 +32,9 @@ public class TourPackageServiceTest {
     @InjectMocks
     private TourPackageService tourPackageService = new TourPackageServiceImpl(tourPackageRepository);
 
-    private static String CODE ="SC" ;
-    private static String NAME ="Snowboard Cali";
-    private static TourPackage tourPackage = new TourPackage(CODE, NAME);
+    private static String CODE = "SC";
+    private static String NAME = "Snowboard Cali";
+    private static TourPackage TOUR_PACKAGE = new TourPackage(CODE, NAME);
 
     @Before
     public void setup() {
@@ -45,13 +45,13 @@ public class TourPackageServiceTest {
     public void createTourPackageTest() {
 
         when(tourPackageRepository.existsById(CODE)).thenReturn(false);
-        when(tourPackageRepository.save(argThat(new InsertTourPackageMatcher()))).thenReturn(tourPackage);
+        when(tourPackageRepository.save(argThat(new InsertTourPackageMatcher()))).thenReturn(TOUR_PACKAGE);
 
         TourPackage resultTourPackage = tourPackageService.createTourPackage(CODE, NAME);
 
         assertNotNull(resultTourPackage);
-        assertEquals(resultTourPackage.getCode(), tourPackage.getCode());
-        assertEquals(resultTourPackage.getName(), tourPackage.getName());
+        assertEquals(resultTourPackage.getCode(), TOUR_PACKAGE.getCode());
+        assertEquals(resultTourPackage.getName(), TOUR_PACKAGE.getName());
 
         verify(tourPackageRepository).existsById(CODE);
         verify(tourPackageRepository).save(argThat(new InsertTourPackageMatcher()));
