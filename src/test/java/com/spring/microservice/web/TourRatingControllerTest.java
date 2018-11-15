@@ -57,7 +57,7 @@ public class TourRatingControllerTest {
     }
 
     @Test
-    public void createTourTest() throws Exception {
+    public void createTourRatingTest() throws Exception {
         when(tourService.verifyTour(TOUR_ID)).thenReturn(mock(Tour.class));
         doNothing().when(tourRatingService).save(any(RatingBO.class));
 
