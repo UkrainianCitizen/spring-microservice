@@ -52,4 +52,7 @@ public interface TourRepository extends PagingAndSortingRepository<Tour, Integer
     @Override
     @RestResource(exported = false)
     void deleteAll();
+
+    @RestResource(exported = false)
+    Tour findByTitle(String title);
 }
