@@ -1,5 +1,7 @@
 package com.spring.microservice.web;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -12,13 +14,14 @@ public class RatingDto {
 
     @Min(0)
     @Max(5)
-    private Integer score;
+    private int score;
 
     @Size(max = 255)
     private String comment;
 
     @NotNull
-    private Integer customerId;
+    @JsonProperty("customer_id")
+    private int customerId;
 
     /**
      * Constructor to fully initialize the RatingDto
@@ -27,13 +30,16 @@ public class RatingDto {
      * @param comment    comment
      * @param customerId customer id
      */
-    public RatingDto(Integer score, String comment, Integer customerId) {
+    public RatingDto(int score, String comment, int customerId) {
         this.score = score;
         this.comment = comment;
         this.customerId = customerId;
     }
 
-    public Integer getScore() {
+    public RatingDto() {
+    }
+
+    public int getScore() {
         return score;
     }
 
@@ -41,7 +47,7 @@ public class RatingDto {
         return comment;
     }
 
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 

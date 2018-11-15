@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * Tour Rating Controller
  */
 @RestController
+@Validated
 @RequestMapping(path = "/tours/{tourId}/ratings")
 public class TourRatingController {
 
@@ -47,10 +49,10 @@ public class TourRatingController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTourRating(@PathVariable(value = "tourId") int tourId,
-                                 @RequestBody @Validated RatingDto ratingDto) {
+                                 @RequestBody @Valid RatingDto ratingDto) {
 
         Tour tour = tourService.verifyTour(tourId);
-        tourRatingService.save(toRatingBO(tour,ratingDto));
+        tourRatingService.save(toRatingBO(tour, ratingDto));
     }
 
     @GetMapping
@@ -81,7 +83,7 @@ public class TourRatingController {
 
     @PutMapping
     public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId,
-                                   @RequestBody @Validated RatingDto ratingDto) {
+                                   @RequestBody @Valid RatingDto ratingDto) {
 
         TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
 
@@ -94,11 +96,11 @@ public class TourRatingController {
 
     @PatchMapping
     public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId,
-                                     @RequestBody @Validated RatingDto ratingDto) {
+                                     @RequestBody @Valid RatingDto ratingDto) {
 
         TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
 
-        if (ratingDto.getScore() != null)
+        if (ratingDto.getScore() != 0)
             tourRating.setScore(ratingDto.getScore());
         if (ratingDto.getComment() != null)
             tourRating.setComment(ratingDto.getComment());
@@ -130,18 +132,18 @@ public class TourRatingController {
     /**
      * Converts RatingDto to RatingBo.
      *
-     * @param tour tour
+     * @param tour      tour
      * @param ratingDto ratingDto
      * @return rating BO
      */
-    private RatingBO toRatingBO(Tour tour, RatingDto ratingDto ) {
+    private RatingBO toRatingBO(Tour tour, RatingDto ratingDto) {
         return new RatingBO(tour, ratingDto.getCustomerId(), ratingDto.getScore(), ratingDto.getComment());
     }
 
     /**
      * Verifies and returns the TourRating for a particular tourId and Customer
      *
-     * @param tourId tour id
+     * @param tourId     tour id
      * @param customerId customer id
      * @return the found TourRating
      * @throws NoSuchElementException if no TourRating found

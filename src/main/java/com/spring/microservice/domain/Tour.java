@@ -61,6 +61,9 @@ public class Tour {
         this.region = region;
     }
 
+    public Tour() {
+    }
+
     public Integer getId() {
         return id;
     }
