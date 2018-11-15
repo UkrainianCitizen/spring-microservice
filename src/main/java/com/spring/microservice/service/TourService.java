@@ -4,6 +4,8 @@ import com.spring.microservice.domain.Difficulty;
 import com.spring.microservice.domain.Region;
 import com.spring.microservice.domain.Tour;
 
+import java.util.NoSuchElementException;
+
 public interface TourService {
 
     /**
@@ -30,4 +32,13 @@ public interface TourService {
      * @return the total.
      */
     long total();
+
+    /**
+     * Verify and return the Tour given a tourId.
+     *
+     * @param tourId tour id
+     * @return the found Tour
+     * @throws NoSuchElementException if no Tour found.
+     */
+    Tour verifyTour(int tourId) throws NoSuchElementException;
 }
