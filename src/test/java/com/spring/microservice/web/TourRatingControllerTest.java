@@ -25,6 +25,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Tour Rating Controller Unit Test.
+ *
+ * @author Alexander Huba
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TourRatingController.class)
 public class TourRatingControllerTest {
