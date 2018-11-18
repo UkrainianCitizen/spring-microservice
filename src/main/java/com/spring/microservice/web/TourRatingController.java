@@ -3,7 +3,6 @@ package com.spring.microservice.web;
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
-import com.spring.microservice.service.TourService;
 import com.spring.microservice.service.model.RatingBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,14 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.AbstractMap;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 /**
@@ -38,85 +35,100 @@ import java.util.stream.Collectors;
 public class TourRatingController {
 
     private TourRatingService tourRatingService;
-    private TourService tourService;
 
     @Autowired
-    public TourRatingController(TourRatingService tourRatingService, TourService tourService) {
+    public TourRatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.tourService = tourService;
     }
 
+    /**
+     * Create a Tour Rating.
+     *
+     * @param tourId    tour id
+     * @param ratingDto rating dto
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTourRating(@PathVariable(value = "tourId") int tourId,
-                                 @RequestBody @Valid RatingDto ratingDto) {
-
-        Tour tour = tourService.verifyTour(tourId);
-        tourRatingService.save(toRatingBO(tour, ratingDto));
+    public void createTourRating(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
+        tourRatingService.createNew(tourId, ratingDto.getCustomerId(), ratingDto.getScore(), ratingDto.getComment());
     }
 
+    /**
+     * Create Several Tour Ratings for one tour, score and several customers.
+     *
+     * @param tourId    tour id
+     * @param score     score
+     * @param customers customers
+     */
+    @PostMapping("/{score}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createManyTourRatings(@PathVariable(value = "tourId") int tourId,
+                                      @PathVariable(value = "score") int score,
+                                      @RequestParam("customers") Integer customers[]) {
+        tourRatingService.rateMany(tourId, score, customers);
+    }
+
+    /**
+     * Lookup the Ratings for a tour.
+     *
+     * @param tourId   tour id
+     * @param pageable pageable object
+     * @return ratings for the given tour
+     */
     @GetMapping
     public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable) {
-
-        tourService.verifyTour(tourId);
-
-        Page<TourRating> tourRatingPage = tourRatingService.findByPkTourId(tourId, pageable);
+        Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
         List<RatingDto> ratingDtoList = tourRatingPage.getContent()
                 .stream().map(this::toDto).collect(Collectors.toList());
-
         return new PageImpl<>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
-
     }
 
-    @GetMapping(path = "/average")
+    /**
+     * Calculate the average Score of a Tour.
+     *
+     * @param tourId tour id
+     * @return Tuple of "average" and the average value.
+     */
+    @GetMapping("/average")
     public AbstractMap.SimpleEntry<String, Double> getAverage(@PathVariable(value = "tourId") int tourId) {
-
-        tourService.verifyTour(tourId);
-
-        List<TourRating> tourRatings = tourRatingService.findByPkTourId(tourId);
-        OptionalDouble average = tourRatings.stream().mapToInt(TourRating::getScore).average();
-
-        return new AbstractMap.SimpleEntry<>("average",
-                average.isPresent() ? average.getAsDouble() : null);
-
+        return new AbstractMap.SimpleEntry<>("average", tourRatingService.getAverageScore(tourId));
     }
 
+    /**
+     * Update score and comment of a Tour Rating
+     *
+     * @param tourId    tour id
+     * @param ratingDto rating dto
+     * @return The modified Rating DTO.
+     */
     @PutMapping
-    public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId,
-                                   @RequestBody @Valid RatingDto ratingDto) {
-
-        TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
-
-        tourRating.setScore(ratingDto.getScore());
-        tourRating.setComment(ratingDto.getComment());
-
-        return toDto(tourRatingService.save(tourRating));
-
+    public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
+        return toDto(tourRatingService.update(tourId, ratingDto.getCustomerId(),
+                ratingDto.getScore(), ratingDto.getComment()));
     }
 
+    /**
+     * Update score or comment of a Tour Rating
+     *
+     * @param tourId    tour id
+     * @param ratingDto rating dto
+     * @return The modified Rating DTO.
+     */
     @PatchMapping
-    public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId,
-                                     @RequestBody @Valid RatingDto ratingDto) {
-
-        TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
-
-        if (ratingDto.getScore() != 0)
-            tourRating.setScore(ratingDto.getScore());
-        if (ratingDto.getComment() != null)
-            tourRating.setComment(ratingDto.getComment());
-
-        return toDto(tourRatingService.save(tourRating));
-
+    public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
+        return toDto(tourRatingService.updateSome(tourId, ratingDto.getCustomerId(),
+                ratingDto.getScore(), ratingDto.getComment()));
     }
 
-    @DeleteMapping(path = "/{customerId}")
-    public void delete(@PathVariable(value = "tourId") int tourId,
-                       @PathVariable(value = "customerId") int customerId) {
-
-        TourRating tourRating = verifyTourRating(tourId, customerId);
-
-        tourRatingService.delete(tourRating);
-
+    /**
+     * Delete a Rating of a tour made by a customer
+     *
+     * @param tourId     tour id
+     * @param customerId customer id
+     */
+    @DeleteMapping("/{customerId}")
+    public void delete(@PathVariable(value = "tourId") int tourId, @PathVariable(value = "customerId") int customerId) {
+        tourRatingService.delete(tourId, customerId);
     }
 
     /**
@@ -126,7 +138,7 @@ public class TourRatingController {
      * @return RatingDto
      */
     private RatingDto toDto(TourRating tourRating) {
-        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getPk().getCustomerId());
+        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getCustomerId());
     }
 
     /**
@@ -138,26 +150,5 @@ public class TourRatingController {
      */
     private RatingBO toRatingBO(Tour tour, RatingDto ratingDto) {
         return new RatingBO(tour, ratingDto.getCustomerId(), ratingDto.getScore(), ratingDto.getComment());
-    }
-
-    /**
-     * Verifies and returns the TourRating for a particular tourId and Customer
-     *
-     * @param tourId     tour id
-     * @param customerId customer id
-     * @return the found TourRating
-     * @throws NoSuchElementException if no TourRating found
-     */
-    private TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException {
-
-        TourRating rating = tourRatingService.findByPkTourIdAndPkCustomerId(tourId, customerId);
-
-        if (rating == null) {
-            throw new NoSuchElementException("Tour-Rating pair for request("
-                    + tourId + " for customer" + customerId);
-
-        }
-
-        return rating;
     }
 }

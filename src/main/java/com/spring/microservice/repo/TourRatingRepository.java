@@ -1,20 +1,19 @@
 package com.spring.microservice.repo;
 
-
 import com.spring.microservice.domain.TourRating;
-import com.spring.microservice.domain.TourRatingPk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Tour Rating Repository Interface.
  */
 @RepositoryRestResource(exported = false)
-public interface TourRatingRepository extends CrudRepository<TourRating, TourRatingPk> {
+public interface TourRatingRepository extends CrudRepository<TourRating, Integer> {
 
     /**
      * Lookup all the TourRatings for a tour.
@@ -22,16 +21,22 @@ public interface TourRatingRepository extends CrudRepository<TourRating, TourRat
      * @param tourId is the tour Identifier
      * @return a List of any found TourRatings
      */
-    List<TourRating> findByPkTourId(Integer tourId);
+    List<TourRating> findByTourId(Integer tourId);
 
-    Page<TourRating> findByPkTourId(Integer tourId, Pageable pageable);
+    /**
+     * Lookup a page of TourRatings for a tour.
+     *
+     * @param tourId tourId is the tour Identifier
+     * @param pageable details for the desired page
+     * @return a Page of any found TourRatings
+     */
+    Page<TourRating> findByTourId(Integer tourId, Pageable pageable);
 
     /**
      * Lookup a TourRating by the TourId and Customer Id
-     *
-     * @param tourId     tour id
+     * @param tourId tour id
      * @param customerId customer id
      * @return TourRating if found, null otherwise.
      */
-    TourRating findByPkTourIdAndPkCustomerId(Integer tourId, Integer customerId);
+    Optional<TourRating> findByTourIdAndCustomerId(Integer tourId, Integer customerId);
 }
