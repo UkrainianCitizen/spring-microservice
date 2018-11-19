@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Tour Rating Service.
@@ -23,6 +24,21 @@ public interface TourRatingService {
      * @throws NoSuchElementException if no Tour found.
      */
     void createNew(int tourId, Integer customerId, Integer score, String comment) throws NoSuchElementException;
+
+    /**
+     * Get a ratings by id.
+     *
+     * @param id rating identifier
+     * @return TourRatings
+     */
+    Optional<TourRating> lookupRatingById(int id);
+
+    /**
+     * Get All Ratings.
+     *
+     * @return List of TourRatings
+     */
+    Iterable<TourRating> lookupAll();
 
     /**
      * Get a page of tour ratings for a tour.

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 /**
@@ -38,7 +39,17 @@ public class TourRatingServiceImpl implements TourRatingService {
     }
 
     @Override
-    public Page<TourRating> lookupRatings(int tourId, Pageable pageable) throws NoSuchElementException  {
+    public Optional<TourRating> lookupRatingById(int id) {
+        return tourRatingRepository.findById(id);
+    }
+
+    @Override
+    public Iterable<TourRating> lookupAll() {
+        return tourRatingRepository.findAll();
+    }
+
+    @Override
+    public Page<TourRating> lookupRatings(int tourId, Pageable pageable) throws NoSuchElementException {
         return tourRatingRepository.findByTourId(verifyTour(tourId).getId(), pageable);
     }
 
@@ -58,7 +69,7 @@ public class TourRatingServiceImpl implements TourRatingService {
         if (score != null) {
             rating.setScore(score);
         }
-        if (comment!= null) {
+        if (comment != null) {
             rating.setComment(comment);
         }
         return tourRatingRepository.save(rating);
@@ -71,14 +82,14 @@ public class TourRatingServiceImpl implements TourRatingService {
     }
 
     @Override
-    public Double getAverageScore(int tourId)  throws NoSuchElementException  {
+    public Double getAverageScore(int tourId) throws NoSuchElementException {
         List<TourRating> ratings = tourRatingRepository.findByTourId(verifyTour(tourId).getId());
         OptionalDouble average = ratings.stream().mapToInt(TourRating::getScore).average();
-        return average.isPresent() ? average.getAsDouble():null;
+        return average.isPresent() ? average.getAsDouble() : null;
     }
 
     @Override
-    public void rateMany(int tourId,  int score, Integer [] customers) {
+    public void rateMany(int tourId, int score, Integer[] customers) {
         tourRepository.findById(tourId).ifPresent(tour -> {
             for (Integer c : customers) {
                 tourRatingRepository.save(new TourRating(tour, c, score));
