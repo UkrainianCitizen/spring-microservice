@@ -3,11 +3,13 @@ package com.spring.microservice.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * A Classification of Tours.
  */
 @Entity
+@Table(name = "tour_package")
 public class TourPackage {
 
     @Id
@@ -30,6 +32,14 @@ public class TourPackage {
 
     public String getName() {
         return name;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

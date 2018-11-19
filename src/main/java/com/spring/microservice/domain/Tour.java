@@ -17,6 +17,7 @@ import javax.persistence.Table;
  * The Tour contains all attributes of an Explore California Tour.
  */
 @Entity
+@Table(name = "tour")
 public class Tour {
 
     @Id
