@@ -6,8 +6,9 @@ import com.spring.microservice.service.TourRatingService;
 import com.spring.microservice.service.model.RatingBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.AbstractMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Tour Rating Controller
@@ -35,10 +34,12 @@ import java.util.stream.Collectors;
 public class TourRatingController {
 
     private TourRatingService tourRatingService;
+    private RatingAssembler assembler;
 
     @Autowired
-    public TourRatingController(TourRatingService tourRatingService) {
+    public TourRatingController(TourRatingService tourRatingService, RatingAssembler assembler) {
         this.tourRatingService = tourRatingService;
+        this.assembler = assembler;
     }
 
     /**
@@ -71,16 +72,15 @@ public class TourRatingController {
     /**
      * Lookup the Ratings for a tour.
      *
-     * @param tourId   tour id
-     * @param pageable pageable object
-     * @return ratings for the given tour
+     * @param tourId                  tour id
+     * @param pageable                pageable object
+     * @param pagedResourcesAssembler paged resources assembler
+     * @return HATEOAS page with ratings for the given tour
      */
     @GetMapping
-    public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable) {
+    public PagedResources getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable, PagedResourcesAssembler<TourRating> pagedResourcesAssembler) {
         Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
-        List<RatingDto> ratingDtoList = tourRatingPage.getContent()
-                .stream().map(this::toDto).collect(Collectors.toList());
-        return new PageImpl<>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
+        return pagedResourcesAssembler.toResource(tourRatingPage, assembler);
     }
 
     /**
