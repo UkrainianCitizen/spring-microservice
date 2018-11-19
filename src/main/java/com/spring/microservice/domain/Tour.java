@@ -1,5 +1,7 @@
 package com.spring.microservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * The Tour contains all attributes of an Explore California Tour.
@@ -42,7 +45,8 @@ public class Tour {
     private String keywords;
 
     @ManyToOne
-    @JoinColumn(name="tour_package_code")
+    @JoinColumn(name = "tour_package_code")
+    @JsonProperty("tour_package")
     private TourPackage tourPackage;
 
     @Column

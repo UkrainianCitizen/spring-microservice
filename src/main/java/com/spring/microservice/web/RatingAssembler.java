@@ -13,6 +13,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rating Assembler.
+ * Decorates {@link TourRating} as HATEOAS.
  */
 @Component
 public class RatingAssembler extends ResourceAssemblerSupport<TourRating, RatingDto> {

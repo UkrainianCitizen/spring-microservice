@@ -1,5 +1,7 @@
 package com.spring.microservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class TourRating {
     private Tour tour;
 
     @Column(name = "customer_id")
+    @JsonProperty("customer_id")
     private Integer customerId;
 
     @Column(nullable = false)

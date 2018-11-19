@@ -61,7 +61,6 @@ public class TourRatingServiceImpl implements TourRatingService {
         return tourRatingRepository.save(rating);
     }
 
-
     @Override
     public TourRating updateSome(int tourId, Integer customerId, Integer score, String comment)
             throws NoSuchElementException {
