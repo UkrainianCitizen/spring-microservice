@@ -1,6 +1,7 @@
 package com.spring.microservice.web;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -10,7 +11,7 @@ import javax.validation.constraints.Size;
 /**
  * Data Transfer Object for Rating a Tour.
  */
-public class RatingDto {
+public class RatingDto extends ResourceSupport {
 
     @Min(0)
     @Max(5)

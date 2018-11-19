@@ -44,8 +44,8 @@ public class TourRatingServiceImpl implements TourRatingService {
     }
 
     @Override
-    public Iterable<TourRating> lookupAll() {
-        return tourRatingRepository.findAll();
+    public List<TourRating> lookupAll() {
+        return (List<TourRating>) tourRatingRepository.findAll();
     }
 
     @Override
