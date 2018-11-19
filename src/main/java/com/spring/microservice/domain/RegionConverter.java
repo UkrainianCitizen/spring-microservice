@@ -6,7 +6,7 @@ import javax.persistence.Converter;
 /**
  * Region Converter.
  */
-@Converter
+@Converter(autoApply = true)
 public class RegionConverter implements AttributeConverter<Region, String> {
 
     @Override
