@@ -5,12 +5,15 @@ import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.repo.TourRatingRepository;
 import com.spring.microservice.repo.TourRepository;
 import com.spring.microservice.service.TourRatingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,6 +28,8 @@ public class TourRatingServiceImpl implements TourRatingService {
 
     private TourRatingRepository tourRatingRepository;
     private TourRepository tourRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TourRatingService.class);
 
     @Autowired
     public TourRatingServiceImpl(TourRatingRepository tourRatingRepository, TourRepository tourRepository) {
@@ -89,11 +94,12 @@ public class TourRatingServiceImpl implements TourRatingService {
 
     @Override
     public void rateMany(int tourId, int score, Integer[] customers) {
-        tourRepository.findById(tourId).ifPresent(tour -> {
-            for (Integer c : customers) {
-                tourRatingRepository.save(new TourRating(tour, c, score));
+        LOGGER.info("Rate tour {} by customers {}", tourId, Arrays.asList(customers).toString());
+        Tour tour = tourRepository.findById(tourId).orElseThrow(NoSuchElementException::new);
+            for (Integer customer : customers) {
+                LOGGER.debug("Attempt to create Tour Rating for customer {}", customer);
+                tourRatingRepository.save(new TourRating(tour, customer, score));
             }
-        });
     }
 
     private Tour verifyTour(int tourId) throws NoSuchElementException {

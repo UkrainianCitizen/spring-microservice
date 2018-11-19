@@ -4,6 +4,8 @@ import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
 import com.spring.microservice.service.model.RatingBO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,8 @@ public class TourRatingController {
     private TourRatingService tourRatingService;
     private RatingAssembler assembler;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TourRatingController.class);
+
     @Autowired
     public TourRatingController(TourRatingService tourRatingService, RatingAssembler assembler) {
         this.tourRatingService = tourRatingService;
@@ -66,6 +70,7 @@ public class TourRatingController {
     public void createManyTourRatings(@PathVariable(value = "tourId") int tourId,
                                       @PathVariable(value = "score") int score,
                                       @RequestParam("customers") Integer customers[]) {
+        LOGGER.info("POST /tours/{}/ratings/{}", tourId, score);
         tourRatingService.rateMany(tourId, score, customers);
     }
 
