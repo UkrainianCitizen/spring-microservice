@@ -4,7 +4,7 @@ CREATE TABLE tour_package(
 );
 
 CREATE TABLE tour (
-  id SERIAL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   tour_package_code CHAR(2) NOT NULL,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(2000) NOT NULL,
@@ -18,9 +18,8 @@ CREATE TABLE tour (
 );
 ALTER TABLE tour ADD FOREIGN KEY (tour_package_code) REFERENCES tour_package(code);
 
-
 CREATE TABLE tour_rating (
-    id SERIAL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tour_id BIGINT,
     customer_id BIGINT,
     score INT,
