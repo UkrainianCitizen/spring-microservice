@@ -3,13 +3,12 @@ package com.spring.microservice.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.Serializable;
 
 /**
  * A Classification of Tours.
  */
 @Entity
-public class TourPackage implements Serializable {
+public class TourPackage {
 
     @Id
     private String code;
