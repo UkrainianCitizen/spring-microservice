@@ -100,4 +100,14 @@ public interface TourRatingService {
      * @param customers list with customers ids
      */
     void rateMany(int tourId, int score, Integer[] customers);
+
+    /**
+     * Verify and return the TourRating for a particular tourId and Customer
+     *
+     * @param tourId     tour id
+     * @param customerId customer id
+     * @return the found TourRating
+     * @throws NoSuchElementException if no TourRating found
+     */
+    TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException;
 }

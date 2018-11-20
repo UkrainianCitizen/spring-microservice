@@ -108,7 +108,8 @@ public class TourRatingServiceImpl implements TourRatingService {
         );
     }
 
-    private TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException {
+    @Override
+    public TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException {
         return tourRatingRepository.findByTourIdAndCustomerId(tourId, customerId).orElseThrow(() ->
                 new NoSuchElementException("Tour-Rating pair for request("
                         + tourId + " for customer" + customerId));
