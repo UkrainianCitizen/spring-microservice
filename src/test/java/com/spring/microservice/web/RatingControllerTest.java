@@ -1,5 +1,6 @@
 package com.spring.microservice.web;
 
+import com.spring.microservice.ExplorecaliApplication;
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
@@ -27,7 +28,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * Rating controller test.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = ExplorecaliApplication.class)
 public class RatingControllerTest {
     private static final String RATINGS_URL = "/ratings";
 
