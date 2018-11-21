@@ -44,6 +44,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- Embedded H2 db -->
         <dependency>
             <groupId>com.h2database</groupId>

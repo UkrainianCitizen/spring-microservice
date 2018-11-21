@@ -1,6 +1,7 @@
 package com.spring.microservice;
 
 import com.spring.microservice.config.ApplicationConfig;
+import com.spring.microservice.config.WebSecurityConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -13,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @EnableSwagger2
-@Import(ApplicationConfig.class)
+@Import({ApplicationConfig.class, WebSecurityConfiguration.class})
 public class ExplorecaliApplication {
     public static void main(String[] args) {
         SpringApplication.run(ExplorecaliApplication.class, args);
