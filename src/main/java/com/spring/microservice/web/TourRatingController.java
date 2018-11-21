@@ -3,7 +3,7 @@ package com.spring.microservice.web;
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
-import com.spring.microservice.service.model.RatingBO;
+import com.spring.microservice.service.dto.RatingBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.AbstractMap;
 
 /**
- * Tour Rating Controller
+ * Tour Rating Controller.
  */
 @RestController
 @Validated
@@ -47,7 +47,7 @@ public class TourRatingController {
     }
 
     /**
-     * Create a Tour Rating.
+     * Creates a Tour Rating.
      *
      * @param tourId    tour id
      * @param ratingDto rating dto
@@ -59,7 +59,7 @@ public class TourRatingController {
     }
 
     /**
-     * Create Several Tour Ratings for one tour, score and several customers.
+     * Creates Several Tour Ratings for one tour, score and several customers.
      *
      * @param tourId    tour id
      * @param score     score
@@ -75,7 +75,7 @@ public class TourRatingController {
     }
 
     /**
-     * Lookup the Ratings for a tour.
+     * Lookups the Ratings for a tour.
      *
      * @param tourId                  tour id
      * @param pageable                pageable object
@@ -89,7 +89,7 @@ public class TourRatingController {
     }
 
     /**
-     * Calculate the average Score of a Tour.
+     * Calculates the average Score of a Tour.
      *
      * @param tourId tour id
      * @return Tuple of "average" and the average value.
@@ -113,7 +113,7 @@ public class TourRatingController {
     }
 
     /**
-     * Update score or comment of a Tour Rating
+     * Updates a score or a comment of a Tour Rating
      *
      * @param tourId    tour id
      * @param ratingDto rating dto
@@ -126,7 +126,7 @@ public class TourRatingController {
     }
 
     /**
-     * Delete a Rating of a tour made by a customer
+     * Deletes a Rating of a tour made by a customer
      *
      * @param tourId     tour id
      * @param customerId customer id

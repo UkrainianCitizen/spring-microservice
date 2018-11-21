@@ -1,4 +1,4 @@
-package com.spring.microservice.service;
+package com.spring.microservice.service.impl;
 
 import com.spring.microservice.domain.User;
 import com.spring.microservice.repo.UserRepository;

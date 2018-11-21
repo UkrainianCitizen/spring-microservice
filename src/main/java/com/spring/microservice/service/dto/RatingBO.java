@@ -1,4 +1,4 @@
-package com.spring.microservice.service.model;
+package com.spring.microservice.service.dto;
 
 import com.spring.microservice.domain.Tour;
 
