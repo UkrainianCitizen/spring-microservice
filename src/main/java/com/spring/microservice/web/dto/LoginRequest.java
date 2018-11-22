@@ -1,13 +1,13 @@
-package com.spring.microservice.web;
+package com.spring.microservice.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
 /**
- * Login Dto.
+ * Login request.
  */
-public class LoginDto {
+public class LoginRequest {
 
     @NotNull
     private String username;
@@ -21,17 +21,19 @@ public class LoginDto {
     @JsonProperty("last_name")
     private String lastName;
 
-    protected LoginDto() {
+    protected LoginRequest() {
     }
 
-    /**
-     * Full constructor
-     * @param username username
-     * @param password password
-     */
-    public LoginDto(String username, String password) {
+    public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public LoginRequest(@NotNull String username, @NotNull String password, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getUsername() {
