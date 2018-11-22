@@ -12,7 +12,7 @@ public class RatingDtoTest {
 
     @Test
     public void testConstructor() {
-        RatingDto dto = new RatingDto(1,"comment", 2);
+        RatingDto dto = new RatingDto(1, "comment", 2);
         assertThat(dto.getScore(), is(1));
         assertThat(dto.getComment(), is("comment"));
         assertThat(dto.getCustomerId(), is(2));

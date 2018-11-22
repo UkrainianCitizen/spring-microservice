@@ -1,9 +1,9 @@
 package com.spring.microservice.web;
 
-import com.spring.microservice.ExplorecaliApplication;
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
+import com.spring.microservice.web.util.JwtRequestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,7 +39,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = ExplorecaliApplication.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class TourRatingControllerTest {
 
     //These Tour and rating id's do not already exist in the db
@@ -50,6 +52,9 @@ public class TourRatingControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private JwtRequestHelper jwtRequestHelper;
+
     @MockBean
     private TourRatingService serviceMock;
 
@@ -59,7 +64,7 @@ public class TourRatingControllerTest {
     @Mock
     private Tour tourMock;
 
-    private RatingDto ratingDto = new RatingDto(SCORE, COMMENT,CUSTOMER_ID);
+    private RatingDto ratingDto = new RatingDto(SCORE, COMMENT, CUSTOMER_ID);
 
     @Before
     public void setupReturnValuesOfMockMethods() {
@@ -71,52 +76,57 @@ public class TourRatingControllerTest {
     }
 
     /**
-     *  HTTP POST /tours/{tourId}/ratings
+     * HTTP POST /tours/{tourId}/ratings
      */
     @Test
     public void createTourRating() throws NoSuchElementException {
-        restTemplate.postForEntity(TOUR_RATINGS_URL, ratingDto, Void.class);
+        restTemplate.exchange(TOUR_RATINGS_URL, HttpMethod.POST,
+                new HttpEntity<>(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
 
         verify(this.serviceMock).createNew(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
     }
 
     /**
-     *  HTTP DELETE /tours/{tourId}/ratings
+     * HTTP DELETE /tours/{tourId}/ratings
      */
     @Test
     public void delete() throws NoSuchElementException {
-        restTemplate.delete(TOUR_RATINGS_URL + "/" + CUSTOMER_ID);
+        restTemplate.exchange(TOUR_RATINGS_URL + "/" + CUSTOMER_ID, HttpMethod.DELETE,
+                new HttpEntity(jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
 
         verify(serviceMock).delete(TOUR_ID, CUSTOMER_ID);
     }
 
     /**
-     *  HTTP POST /tours/{tourId}/ratings/{score}?customers={ids..}
+     * HTTP POST /tours/{tourId}/ratings/{score}?customers={ids..}
      */
     @Test
     public void createManyTourRatings() throws NoSuchElementException {
-        restTemplate.postForEntity(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID, ratingDto, Void.class);
-        verify(serviceMock).rateMany(TOUR_ID, SCORE, new Integer[] {CUSTOMER_ID});
+        restTemplate.exchange(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID,
+                HttpMethod.POST,
+                new HttpEntity<>(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")),
+                Void.class);
+        verify(serviceMock).rateMany(TOUR_ID, SCORE, new Integer[]{CUSTOMER_ID});
     }
 
     /**
-     *  HTTP GET /tours/{tourId}/ratings
+     * HTTP GET /tours/{tourId}/ratings
      */
     @Test
     @SuppressWarnings("unchecked")
     public void getAllRatingsForTour() throws NoSuchElementException {
         List<TourRating> listOfTourRatings = Collections.singletonList(tourRatingMock);
-        Page<TourRating> page = new PageImpl(listOfTourRatings, PageRequest.of(0,10),1);
-        when(serviceMock.lookupRatings(anyInt(),any(Pageable.class))).thenReturn(page);
+        Page<TourRating> page = new PageImpl(listOfTourRatings, PageRequest.of(0, 10), 1);
+        when(serviceMock.lookupRatings(anyInt(), any(Pageable.class))).thenReturn(page);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(TOUR_RATINGS_URL,String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(TOUR_RATINGS_URL, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         verify(serviceMock).lookupRatings(anyInt(), any(Pageable.class));
     }
 
     /**
-     *  HTTP GET /tours/{tourId}/ratings/average
+     * HTTP GET /tours/{tourId}/ratings/average
      */
     @Test
     public void getAverage() throws NoSuchElementException {
@@ -129,13 +139,16 @@ public class TourRatingControllerTest {
     }
 
     /**
-     *  HTTP PUT /tours/{tourId}/ratings
+     * HTTP PUT /tours/{tourId}/ratings
      */
     @Test
     public void updateWithPut() throws NoSuchElementException {
         when(serviceMock.update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT)).thenReturn(tourRatingMock);
 
-        restTemplate.put(TOUR_RATINGS_URL, ratingDto);
+        restTemplate.exchange(TOUR_RATINGS_URL,
+                HttpMethod.PUT,
+                new HttpEntity<>(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")),
+                Void.class);
 
         verify(serviceMock).update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
     }

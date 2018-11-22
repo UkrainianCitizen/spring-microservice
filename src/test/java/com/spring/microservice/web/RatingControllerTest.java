@@ -1,6 +1,5 @@
 package com.spring.microservice.web;
 
-import com.spring.microservice.ExplorecaliApplication;
 import com.spring.microservice.domain.Tour;
 import com.spring.microservice.domain.TourRating;
 import com.spring.microservice.service.TourRatingService;
@@ -28,7 +27,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * Rating controller test.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = ExplorecaliApplication.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class RatingControllerTest {
     private static final String RATINGS_URL = "/ratings";
 
@@ -61,10 +60,10 @@ public class RatingControllerTest {
     }
 
     /**
-     *  HTTP GET /ratings/{id}
+     * HTTP GET /ratings/{id}
      */
     @Test
-    public void getOne()  {
+    public void getOne() {
 
         when(tourRatingServiceMock.lookupRatingById(RATING_ID)).thenReturn(Optional.of(tourRatingMock));
 
